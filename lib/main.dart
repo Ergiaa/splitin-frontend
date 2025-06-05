@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:splitin_frontend/navigation_index_model.dart';
+import 'package:splitin_frontend/splitin_app.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => NavigationIndexModel(),
+      child: MainApp(),
+      
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
@@ -9,94 +18,33 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplitInApp(),
+      home: const SplitInApp(),
+      routes: {
+        "/scanpage": (context) => const ScanPage(),
+        "/mainpage":(context) => const SplitInApp()
+      },
     );
   }
 }
 
-class SplitInApp extends StatefulWidget {
-  const SplitInApp({Key? key}) : super(key: key);
+class ScanPage extends StatefulWidget{
+  const ScanPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _SplitInState();
+  State<StatefulWidget> createState() => _ScanPageState();
 }
 
-class _SplitInState extends State<SplitInApp> {
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() => _selectedIndex = index);
-  }
-
+class _ScanPageState extends State<ScanPage>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-
     return Scaffold(
-      appBar: AppBar(title: Text("Ini adalah Judul")),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: Container(
-        height: 70,
-        width: 70,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle
-        ),
-        child: FloatingActionButton(
-          onPressed: () {},
-          elevation: 20,
-          
-          child: ImageIcon(AssetImage("assets/images/star.png"), size: 50,color: const Color.fromARGB(255, 244, 157, 26),),
-
-          shape: CircleBorder(),
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 12,
-                offset: Offset(0, 8),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(30),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.white,
-              currentIndex: _selectedIndex,
-              selectedItemColor: Colors.blue,
-              unselectedItemColor: Colors.grey,
-              showSelectedLabels: true,
-              showUnselectedLabels: false,
-              onTap: _onItemTapped,
-              mouseCursor: MouseCursor.uncontrolled,
-              iconSize: 25,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.group),
-                  label: 'Groups',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications),
-                  label: 'Notifications',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-              ],
-            ),
-          ),
-        ),
+      appBar: AppBar(
+        leading: IconButton(onPressed: (){
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_back)),
       ),
     );
   }
