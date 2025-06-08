@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage>{
             height: screen_height / 15,
             child: FilledButton.icon(
               onPressed: () {
-                Navigator.pushNamed(context, "/login");
+                Navigator.pushNamed(context, "/home");
               },
               label: Text(
                 "Masuk dengan email",
