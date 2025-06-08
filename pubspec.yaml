@@ -17,7 +17,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   fonts:
@@ -28,12 +28,4 @@ flutter:
           weight: 700
   uses-material-design: true
   assets:
-    - assets/images/star.png
-    - assets/images/splitin.png
-    - assets/images/bagiratagakribet.png
-    - assets/images/eye.png
-    - assets/images/lightning.png
-    - assets/images/round-email.png
-    - assets/images/google.png
-    - assets/images/soft-star.png
-    - assets/images/eye2.png
+    - assets/images/
