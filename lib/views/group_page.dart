@@ -77,6 +77,7 @@ class _GroupPageState extends State<GroupPage> {
                     memberImages: List<String>.from(group['members']),
                     onTap: () {
                       // Implement navigation to group detail
+                      Navigator.pushNamed(context, "/groups/group-details");
                     },
                   );
                 },

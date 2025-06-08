@@ -7,6 +7,7 @@ import 'package:splitin_frontend/views/login_page.dart';
 import 'package:splitin_frontend/views/main_page.dart';
 import 'package:splitin_frontend/views/profile_page.dart';
 import 'package:splitin_frontend/views/register_page.dart';
+import 'package:splitin_frontend/views/group_details_page.dart';
 
 class SplitInRoute{
   static const String main = "/";
@@ -21,6 +22,8 @@ class SplitInRoute{
   static const String bill_item = "/bill-item";
   static const String scan = "/bill-item/scan";
   static const String add_participant = "/bill-item/add-participants";
+
+  static const String group_details = "/groups/group-details";
 
 
   static Route<dynamic> generateRoute(RouteSettings settings){
@@ -39,6 +42,8 @@ class SplitInRoute{
         return MaterialPageRoute(builder: (_) => ProfilePage());
       case bill_item:
         return MaterialPageRoute(builder: (_) => BillItemsPage());
+      case group_details:
+        return MaterialPageRoute(builder: (_) => GroupDetailsPage());
       default:
         return MaterialPageRoute(builder: (_) => MainPage());
     }
