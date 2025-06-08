@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitin_frontend/routes.dart';
-import 'package:splitin_frontend/views/login_page.dart';
 import 'package:splitin_frontend/views/main_page.dart';
 import 'package:splitin_frontend/models/provider.dart';
-import 'package:splitin_frontend/views/register_page.dart';
-import 'package:splitin_frontend/views/add_bills_page.dart';
-import 'package:splitin_frontend/views/home_page.dart';
 
 void main() {
   runApp(

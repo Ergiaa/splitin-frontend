@@ -41,7 +41,7 @@ class SplitInRoute{
         return MaterialPageRoute(builder: (_) => BillItemsPage());
       default:
         return MaterialPageRoute(builder: (_) => MainPage());
-    };
+    }
   } 
 
 }

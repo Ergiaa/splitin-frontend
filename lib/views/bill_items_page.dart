@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitin_frontend/models/provider.dart';
-import 'package:splitin_frontend/widgets/bottom_navigation_bar.dart';
-import 'package:splitin_frontend/widgets/floating_action_button.dart';
 
 class BillItemsPage extends StatefulWidget {
   const BillItemsPage({super.key});

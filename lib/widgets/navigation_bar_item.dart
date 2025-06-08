@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitin_frontend/models/provider.dart';
 
+// ignore: must_be_immutable
 class NavigationItem extends StatelessWidget {
   NavigationItem(this.itemIndex, this.route, this.padding, this.icon);
 
