@@ -20,6 +20,18 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  fonts:
+    - family: montserrat
+      fonts:
+        - asset: fonts/montserrat.ttf
+        - asset: fonts/montserrat-bold.ttf
+          weight: 700
   uses-material-design: true
   assets:
     - assets/images/star.png
+    - assets/images/splitin.png
+    - assets/images/bagiratagakribet.png
+    - assets/images/eye.png
+    - assets/images/lightning.png
+    - assets/images/round-email.png
+    - assets/images/google.png
