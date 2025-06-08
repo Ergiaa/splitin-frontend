@@ -23,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           backgroundColor: const Color.fromARGB(255, 183, 244, 185),
+          automaticallyImplyLeading: false,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(

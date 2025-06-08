@@ -23,6 +23,7 @@ class _GroupPageState extends State<GroupPage> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           backgroundColor: const Color.fromARGB(255, 155, 207, 249),
+          automaticallyImplyLeading: false,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(

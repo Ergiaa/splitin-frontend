@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage>{
         leading: IconButton(onPressed: (){
           Navigator.pop(context);
         }, icon: Icon(Icons.arrow_back)),
+        automaticallyImplyLeading: false,
       ),
       body: Center(
         child: Container(

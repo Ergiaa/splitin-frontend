@@ -23,6 +23,9 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           backgroundColor: const Color.fromARGB(255, 255, 165, 165),
+          leading: null,
+          automaticallyImplyLeading: false,
+
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(

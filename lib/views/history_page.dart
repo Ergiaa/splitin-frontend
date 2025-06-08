@@ -23,6 +23,7 @@ class _HistoryPageState extends State<HistoryPage> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           backgroundColor:  const Color.fromARGB(255, 252, 230, 165),
+          automaticallyImplyLeading: false,
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
