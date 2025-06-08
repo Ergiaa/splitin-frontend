@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:splitin_frontend/navigation_index_model.dart';
-import 'package:splitin_frontend/splitin_body.dart';
-import 'package:splitin_frontend/splitin_bottom_navigation_bar.dart';
-import 'package:splitin_frontend/splitin_floating_action_button.dart';
+import 'package:splitin_frontend/models/provider.dart';
+import 'package:splitin_frontend/widgets/home_page_body.dart';
+import 'package:splitin_frontend/widgets/bottom_navigation_bar.dart';
+import 'package:splitin_frontend/widgets/floating_action_button.dart';
 
-class SplitInApp extends StatefulWidget {
-  const SplitInApp({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SplitInState();
+  State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _SplitInState extends State<SplitInApp> {
+class _HomePageState extends State<HomePage> {
   static List<AppBar> appBars = <AppBar>[
     AppBar(
       title: Text("Home", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
@@ -34,7 +34,7 @@ class _SplitInState extends State<SplitInApp> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Consumer<NavigationIndexModel>(
+    return Consumer<ProviderModel>(
       builder: (context, value, child) => Scaffold(
         appBar: appBars[value.selectedIndex],
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -46,7 +46,7 @@ class _SplitInState extends State<SplitInApp> {
             child: SplitinFloatingActionButton(),
           ),
         ),
-        body: SplitinBodyPage(),
+        body: HomePageBody(),
         bottomNavigationBar: SplitInNavBar(),
       ),
     );

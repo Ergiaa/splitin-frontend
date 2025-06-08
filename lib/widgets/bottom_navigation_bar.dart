@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:splitin_frontend/navigation_index_model.dart';
+import 'package:splitin_frontend/models/provider.dart';
 
 
 
-class SplitInNavBar extends Consumer<NavigationIndexModel> {
+class SplitInNavBar extends Consumer<ProviderModel> {
   SplitInNavBar()
     : super(
         builder: (context, value, child) => BottomAppBar(
@@ -21,7 +21,7 @@ class SplitInNavBar extends Consumer<NavigationIndexModel> {
                 padding: EdgeInsetsGeometry.only(right: 30),
                 child: IconButton(
                   onPressed: () {
-                    final navigation_index = context.read<NavigationIndexModel>();
+                    final navigation_index = context.read<ProviderModel>();
 
                     navigation_index.changeIndex(0);        
                   },
@@ -34,7 +34,7 @@ class SplitInNavBar extends Consumer<NavigationIndexModel> {
                 padding: EdgeInsetsGeometry.only(right: 35),
                 child: IconButton(
                   onPressed: () {
-                    final navigation_index = context.read<NavigationIndexModel>();
+                    final navigation_index = context.read<ProviderModel>();
 
                     navigation_index.changeIndex(1);  
                   },
@@ -47,7 +47,7 @@ class SplitInNavBar extends Consumer<NavigationIndexModel> {
                 padding: EdgeInsetsGeometry.only(left: 35),
                 child: IconButton(
                   onPressed: () {
-                    final navigation_index = context.read<NavigationIndexModel>();
+                    final navigation_index = context.read<ProviderModel>();
 
                     navigation_index.changeIndex(2);  
                   },
@@ -61,7 +61,7 @@ class SplitInNavBar extends Consumer<NavigationIndexModel> {
                 padding: EdgeInsetsGeometry.only(left: 30),
                 child: IconButton(
                   onPressed: () {
-                    final navigation_index = context.read<NavigationIndexModel>();
+                    final navigation_index = context.read<ProviderModel>();
 
                     navigation_index.changeIndex(3);  
                   },

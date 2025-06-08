@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:splitin_frontend/login_page.dart';
-import 'package:splitin_frontend/main_page.dart';
-import 'package:splitin_frontend/navigation_index_model.dart';
-import 'package:splitin_frontend/register_page.dart';
-import 'package:splitin_frontend/scan_page.dart';
-import 'package:splitin_frontend/splitin_app.dart';
+import 'package:splitin_frontend/views/login_page.dart';
+import 'package:splitin_frontend/views/main_page.dart';
+import 'package:splitin_frontend/models/provider.dart';
+import 'package:splitin_frontend/views/register_page.dart';
+import 'package:splitin_frontend/views/add_bills_page.dart';
+import 'package:splitin_frontend/views/home_page.dart';
 
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => NavigationIndexModel(),
+      create: (context) => ProviderModel(),
       child: MainApp(),
       
     ),
@@ -28,9 +28,9 @@ class MainApp extends StatelessWidget {
       routes: {
         // "/": (context) => const MainPage(),
         "/scanpage": (context) => const ScanPage(),
-        "/homepage":(context) => const SplitInApp(),
+        "/homepage":(context) => const HomePage(),
         "/loginpage": (context) => const LoginPage(),
-        "/registerpage": (context) => const RegisterPage()        
+        "/registerpage": (context) => const RegisterPage()
       },
     );
   }
