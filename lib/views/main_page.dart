@@ -90,7 +90,7 @@ class _MainPageState extends State<MainPage> {
               child: FilledButton.icon(
                 onPressed: () {},
                 label: Text(
-                  "Masuk dengan email",
+                  "Masuk dengan Google",
                   style: TextStyle(fontSize: screen_height*screen_width/18289, fontFamily: "montserrat"),
                 ),
                 icon: ImageIcon(AssetImage("assets/images/google.png")),

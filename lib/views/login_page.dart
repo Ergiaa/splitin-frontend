@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:splitin_frontend/constants/splitin_colors.dart';
 
-class LoginPage extends StatefulWidget{
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>{
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final double screen_width = MediaQuery.sizeOf(context).width;
@@ -68,39 +68,63 @@ class _LoginPageState extends State<LoginPage>{
             ),
           ),
           SizedBox(
-            width: screen_width * 0.85,
+            width: screen_width * 0.88,
             height: screen_height / 15,
-            child: FilledButton.icon(
-              onPressed: () {
-                Navigator.pushNamed(context, "/home");
-              },
-              label: Text(
-                "Masuk dengan email",
-                style: TextStyle(fontSize: 20, fontFamily: "montserrat"),
-              ),
-              icon: ImageIcon(
-                AssetImage("assets/images/round-email.png"),
-                color: Color.fromARGB(255, 33, 150, 84),
-              ),
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Color.fromARGB(255, 33, 150, 84),
-                iconSize: screen_width * screen_height / 12000,
+
+            child: TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
+                    
+                  ),
+                  
+                ),
+                labelText: "Email",
+                filled: true,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
               ),
             ),
           ),
+          SizedBox(
+            width: screen_width * 0.88,
+            height: screen_height / 15,
+
+            child: TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                    
+                  ),
+                  
+                ),
+                
+                labelText: "Password",
+                filled: true,
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                
+              ),
+            ),
+          ),
+          Spacer(flex: 2),
           Padding(
             padding: EdgeInsetsGeometry.only(top: 8),
             child: SizedBox(
-              width: screen_width * 0.85,
-              height: screen_height / 15,
+              width: screen_width * 0.78,
+              height: screen_height / 17,
               child: FilledButton.icon(
                 onPressed: () {},
                 label: Text(
-                  "Masuk dengan email",
-                  style: TextStyle(fontSize: screen_height*screen_width/18289, fontFamily: "montserrat"),
+                  "Masuk",
+                  style: TextStyle(
+                    fontSize: screen_height * screen_width / 18289,
+                    fontFamily: "montserrat",
+                  ),
                 ),
-                icon: ImageIcon(AssetImage("assets/images/google.png")),
                 style: FilledButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Color.fromARGB(255, 33, 150, 84),
@@ -109,12 +133,12 @@ class _LoginPageState extends State<LoginPage>{
               ),
             ),
           ),
-          Spacer(flex: 9),
           
+          Spacer(flex: 8),
+
           Spacer(flex: 1),
         ],
       ),
-      
     );
   }
 }
