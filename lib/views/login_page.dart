@@ -26,7 +26,7 @@ class _LoginPageState extends State<LoginPage>{
                 Text("Ini Login page"),
                 ElevatedButton(onPressed: (){
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, "/homepage");
+                  Navigator.pushNamed(context, "/home");
                 }, child: Text("Anggep aja udah authenticated")),
                 Spacer()
                 

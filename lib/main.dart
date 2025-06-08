@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:splitin_frontend/routes.dart';
 import 'package:splitin_frontend/views/login_page.dart';
 import 'package:splitin_frontend/views/main_page.dart';
 import 'package:splitin_frontend/models/provider.dart';
@@ -25,13 +26,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: const MainPage(),
-      routes: {
-        // "/": (context) => const MainPage(),
-        "/scanpage": (context) => const ScanPage(),
-        "/homepage":(context) => const HomePage(),
-        "/loginpage": (context) => const LoginPage(),
-        "/registerpage": (context) => const RegisterPage()
-      },
+      initialRoute: SplitInRoute.main,
+      onGenerateRoute: SplitInRoute.generateRoute,
     );
   }
 }

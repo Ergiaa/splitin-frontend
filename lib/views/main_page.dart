@@ -16,11 +16,11 @@ class _MainPageState extends State<MainPage>{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(onPressed: (){
-              Navigator.pushNamed(context, "/loginpage");
+              Navigator.pushNamed(context, "/login");
             }, child: Text("button login pake email")),
             ElevatedButton(onPressed: (){}, child: Text("login oauth google (masih belum sih)")),
             ElevatedButton(onPressed: (){
-              Navigator.pushNamed(context, "/registerpage");
+              Navigator.pushNamed(context, "/register");
             }, child: Text("Register akun"))
 
           ],

@@ -6,7 +6,7 @@ class SplitinFloatingActionButton extends Consumer<ProviderModel> {
   SplitinFloatingActionButton()
     : super(builder: (context, value, child) => FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, "/scanpage");
+          Navigator.pushNamed(context, "/bill-item");
         },
         shape: CircleBorder(),
         elevation: 12,

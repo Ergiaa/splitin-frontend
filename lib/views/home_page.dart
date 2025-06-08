@@ -13,30 +13,36 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static List<AppBar> appBars = <AppBar>[
-    AppBar(
-      title: Text("Home", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-      backgroundColor: const Color.fromARGB(255, 255, 165, 165),
-    ),
-    AppBar(
-      title: Text("Groups", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-      backgroundColor: const Color.fromARGB(255, 155, 207, 249),
-    ),
-    AppBar(
-      title: Text("History", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-      backgroundColor: const Color.fromARGB(255, 252, 230, 165),
-    ),
-    AppBar(
-      title: Text("Contacts", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-      backgroundColor: const Color.fromARGB(255, 183, 244, 185),
-    )
-  ];
+  // static List<AppBar> appBars = <AppBar>[
+  //   AppBar(
+  //     title: Text("Home", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+  //     backgroundColor: const Color.fromARGB(255, 255, 165, 165),
+  //   ),
+  //   AppBar(
+  //     title: Text("Groups", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+  //     backgroundColor: const Color.fromARGB(255, 155, 207, 249),
+  //   ),
+  //   AppBar(
+  //     title: Text("History", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+  //     backgroundColor: const Color.fromARGB(255, 252, 230, 165),
+  //   ),
+  //   AppBar(
+  //     title: Text("Contacts", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+  //     backgroundColor: const Color.fromARGB(255, 183, 244, 185),
+  //   )
+  // ];
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Consumer<ProviderModel>(
       builder: (context, value, child) => Scaffold(
-        appBar: appBars[value.selectedIndex],
+        appBar: AppBar(
+          title: Text(
+            "Home",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: const Color.fromARGB(255, 255, 165, 165),
+        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         floatingActionButton: Container(
           height: 70,
@@ -46,7 +52,7 @@ class _HomePageState extends State<HomePage> {
             child: SplitinFloatingActionButton(),
           ),
         ),
-        body: HomePageBody(),
+        body: Container(color: const Color.fromARGB(255, 255, 165, 165)),
         bottomNavigationBar: SplitInNavBar(),
       ),
     );
