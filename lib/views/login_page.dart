@@ -110,14 +110,16 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ),
-          Spacer(flex: 2),
+          Spacer(flex: 3),
           Padding(
             padding: EdgeInsetsGeometry.only(top: 8),
             child: SizedBox(
               width: screen_width * 0.78,
               height: screen_height / 17,
               child: FilledButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, "/home");
+                },
                 label: Text(
                   "Masuk",
                   style: TextStyle(
@@ -135,8 +137,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
           
           Spacer(flex: 8),
-
-          Spacer(flex: 1),
         ],
       ),
     );
