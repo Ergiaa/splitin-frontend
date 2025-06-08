@@ -42,7 +42,7 @@ class HistoryCard extends StatelessWidget {
             child: Icon(icon, color: iconColor),
           ),
           const SizedBox(width: 15),
-          Expanded( // Allows title and date to take available space
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

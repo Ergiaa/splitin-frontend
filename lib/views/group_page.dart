@@ -25,7 +25,7 @@ class _GroupPageState extends State<GroupPage> {
           backgroundColor: const Color.fromARGB(255, 155, 207, 249),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Container(
+        floatingActionButton: SizedBox(
           height: 70,
           width: 70,
           child: FittedBox(

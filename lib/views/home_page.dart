@@ -9,7 +9,7 @@ import 'package:splitin_frontend/widgets/history_card.dart';
 import 'package:splitin_frontend/models/bill_data.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<StatefulWidget> createState() => _HomePageState();
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, value, child) => Scaffold(
         backgroundColor: Colors.white,
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Container(
+        floatingActionButton: SizedBox(
           height: 70,
           width: 70,
           child: FittedBox(
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                     const Text(
                       "Beranda",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Color(0xFF388E3C),
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
                       ),
@@ -83,7 +83,11 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white.withOpacity(0.3),
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.notifications_none, color: Colors.black),
+                          child: const Icon(
+                            Icons.notifications_none,
+                            color: Color(0xFF388E3C),
+                            size: 35,
+                          ),
                         ),
                         Container(
                           width: 50,
