@@ -13,6 +13,8 @@ dependencies:
   floating_navbar: ^3.0.0
   convex_bottom_bar: ^3.0.0
   provider: 
+  flutter_secure_storage: 
+  flutter_dotenv:
 
 dev_dependencies:
   flutter_test:
