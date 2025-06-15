@@ -9,7 +9,6 @@ void main() {
     ChangeNotifierProvider(
       create: (context) => ProviderModel(),
       child: MainApp(),
-      
     ),
   );
 }
@@ -27,4 +26,3 @@ class MainApp extends StatelessWidget {
     );
   }
 }
-

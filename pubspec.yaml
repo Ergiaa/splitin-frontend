@@ -15,7 +15,8 @@ dependencies:
   provider: 
   flutter_secure_storage: 
   flutter_dotenv:
-
+  get_it:
+  http:
 dev_dependencies:
   flutter_test:
     sdk: flutter
