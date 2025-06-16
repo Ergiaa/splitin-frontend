@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:splitin_frontend/models/provider.dart';
 import 'package:splitin_frontend/widgets/bottom_navigation_bar.dart';
@@ -55,28 +56,82 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildField("Nomor Telepon", "+62 899-7069-XXXX"),
                 _buildField("Password", "************"),
                 const SizedBox(height: 30),
-                SizedBox(
-                  width: 350,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // action
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: 170,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // action
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text(
+                          "Edit",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18, // increase or decrease font size here
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-                    child: const Text(
-                      "Edit",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18, // increase or decrease font size here
-                        fontWeight: FontWeight.bold,
+                    SizedBox(
+                      width: 170,
+                      height: 55,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // action
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Sign Out Pengguna'),
+                              content: Text('Apakah kamu yakin bos?'),
+                        
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(
+                                    context,
+                                  ).pop(false), // Cancel
+                                  child: Text('Tidak'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    value.authController.deleteToken();
+                                    
+                                    Navigator.pushReplacementNamed(context, "/");
+                                    
+                                    value.changeIndex(0);
+                                  }, // Confirm
+                                  child: Text('Iya'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text(
+                          "Logout",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18, // increase or decrease font size here
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
                 const SizedBox(height: 50),
               ],
@@ -91,9 +146,10 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(
-                fontWeight: FontWeight.bold, fontSize: 16)),
+        Text(
+          label,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
         const SizedBox(height: 6),
         Container(
           width: double.infinity,

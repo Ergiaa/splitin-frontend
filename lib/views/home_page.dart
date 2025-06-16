@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:splitin_frontend/models/provider.dart';
 import 'package:splitin_frontend/widgets/bottom_navigation_bar.dart';
@@ -44,242 +45,272 @@ class _HomePageState extends State<HomePage> {
       ),
     ];
 
-    return Consumer<ProviderModel>(
-      builder: (context, value, child) => Scaffold(
-        backgroundColor: Colors.white,
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: SizedBox(
-          height: 70,
-          width: 70,
-          child: FittedBox(
-            fit: BoxFit.fill,
-            child: SplitinFloatingActionButton(),
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Beranda",
-                      style: TextStyle(
-                        color: Color(0xFF388E3C),
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(right: 15),
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.3),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.notifications_none,
-                            color: Color(0xFF388E3C),
-                            size: 35,
-                          ),
-                        ),
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                              image: AssetImage('assets/images/person.jpeg'),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async{
+        
+        if (!didPop) {
+          bool shouldExit = await showDialog(
+            
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Keluar Aplikasi'),
+              content: Text('Apakah kamu yakin ingin keluar?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false), // Cancel
+                  child: Text('Tidak'),
                 ),
-              ),
-              Transform.translate(
-                offset: const Offset(0, -30),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Card(
-                    color: const Color.fromARGB(255, 65, 128, 65),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                TextButton(
+                  onPressed: () => SystemNavigator.pop(), // Confirm
+                  child: Text('Iya'),
+                ),
+              ],
+            ),
+          );
+
+          if (shouldExit) {
+            Navigator.of(context).maybePop(); // or use SystemNavigator.pop()
+          }
+        }
+      },
+      child: Consumer<ProviderModel>(
+        builder: (context, value, child) => Scaffold(
+          backgroundColor: Colors.white,
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: SizedBox(
+            height: 70,
+            width: 70,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: SplitinFloatingActionButton(),
+            ),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 50),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Beranda",
+                        style: TextStyle(
+                          color: Color(0xFF388E3C),
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
                         children: [
-                          const Text(
-                            "Total Hutang kamu",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
+                          Container(
+                            margin: const EdgeInsets.only(right: 15),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.3),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.notifications_none,
+                              color: Color(0xFF388E3C),
+                              size: 35,
                             ),
                           ),
-                          Row(
-                            children: [
-                              const Expanded(
-                                child: Text(
-                                  "Rp500,000",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/person.jpeg'),
+                                fit: BoxFit.cover,
                               ),
-                              //
-                              Transform.translate(
-                                offset: const Offset(0, -30),
-                                child: Align(
-                                  alignment: Alignment.topRight,
-                                  child: Image.asset(
-                                    'assets/images/eyes.png',
-                                    width: 100,
-                                    height: 50,
-                                    color: Colors.white,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return const Icon(
-                                        Icons.visibility,
-                                        color: Colors.white,
-                                        size: 24,
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Text(
-                            "Total Piutang kamu",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 5),
-                          const Text(
-                            "Rp15,005,000",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              )
-              ,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Tagihan tertunda",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                Transform.translate(
+                  offset: const Offset(0, -30),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Card(
+                      color: const Color.fromARGB(255, 65, 128, 65),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                      },
-                      child: const Text(
-                        "lihat semua",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Total Hutang kamu",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    "Rp500,000",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                //
+                                Transform.translate(
+                                  offset: const Offset(0, -30),
+                                  child: Align(
+                                    alignment: Alignment.topRight,
+                                    child: Image.asset(
+                                      'assets/images/eyes.png',
+                                      width: 100,
+                                      height: 50,
+                                      color: Colors.white,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return const Icon(
+                                          Icons.visibility,
+                                          color: Colors.white,
+                                          size: 24,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const Text(
+                              "Total Piutang kamu",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            const Text(
+                              "Rp15,005,000",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 15),
-              TagihanHomeCard(
-                title: "Bali Trip w/ the boys",
-                date: "1 Juni 2025",
-                totalAmount: "Rp 50,000,000",
-                icon: Icons.beach_access,
-                iconColor: const Color.fromARGB(255, 255, 165, 165),
-                iconBackgroundColor: const Color.fromARGB(255, 255, 165, 165),
-                participants: baliTripParticipants,
-              ),
-
-              const SizedBox(height: 30),
-
-
-              TagihanHomeCard(
-                title: "Birthday Surprise",
-                date: "16 Mei 2025",
-                totalAmount: "Rp 10,000,000",
-                icon: Icons.cake,
-                iconColor: const Color.fromARGB(255, 252, 230, 165),
-                iconBackgroundColor: const Color.fromARGB(255, 252, 230, 165),
-                participants: birthdayParticipants,
-              ),
-
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Riwayat",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                      },
-                      child: const Text(
-                        "lihat semua",
+                  ),
+                )
+                ,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Tagihan tertunda",
                         style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
+                      TextButton(
+                        onPressed: () {
+                        },
+                        child: const Text(
+                          "lihat semua",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              HistoryCard(
-                title: "Nobar Jumbo",
-                date: "21 Mei 2025",
-                description: "Utang kamu ke Tony Stark",
-                totalAmount: "Rp 100,000",
-                icon: Icons.movie,
-                iconColor: Colors.grey[700]!,
-                iconBackgroundColor: Colors.grey[200]!,
-                statusText: "Sudah Lunas",
-                statusBackgroundColor: Colors.lightGreen[100]!,
-                statusTextColor: Colors.lightGreen[800]!,
-              ),
-
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 15),
+                TagihanHomeCard(
+                  title: "Bali Trip w/ the boys",
+                  date: "1 Juni 2025",
+                  totalAmount: "Rp 50,000,000",
+                  icon: Icons.beach_access,
+                  iconColor: const Color.fromARGB(255, 255, 165, 165),
+                  iconBackgroundColor: const Color.fromARGB(255, 255, 165, 165),
+                  participants: baliTripParticipants,
+                ),
+      
+                const SizedBox(height: 30),
+      
+      
+                TagihanHomeCard(
+                  title: "Birthday Surprise",
+                  date: "16 Mei 2025",
+                  totalAmount: "Rp 10,000,000",
+                  icon: Icons.cake,
+                  iconColor: const Color.fromARGB(255, 252, 230, 165),
+                  iconBackgroundColor: const Color.fromARGB(255, 252, 230, 165),
+                  participants: birthdayParticipants,
+                ),
+      
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Riwayat",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                        },
+                        child: const Text(
+                          "lihat semua",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 15),
+                HistoryCard(
+                  title: "Nobar Jumbo",
+                  date: "21 Mei 2025",
+                  description: "Utang kamu ke Tony Stark",
+                  totalAmount: "Rp 100,000",
+                  icon: Icons.movie,
+                  iconColor: Colors.grey[700]!,
+                  iconBackgroundColor: Colors.grey[200]!,
+                  statusText: "Sudah Lunas",
+                  statusBackgroundColor: Colors.lightGreen[100]!,
+                  statusTextColor: Colors.lightGreen[800]!,
+                ),
+      
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
+          bottomNavigationBar: SplitInNavBar(),
         ),
-        bottomNavigationBar: SplitInNavBar(),
       ),
     );
   }

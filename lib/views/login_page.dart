@@ -16,6 +16,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool? _isShowError;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _isShowError = false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final double screen_width = MediaQuery.sizeOf(context).width;
@@ -73,6 +82,9 @@ class _LoginPageState extends State<LoginPage> {
 
               child: TextField(
                 controller: value.emailController,
+                onTapOutside: (PointerDownEvent event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.only(
@@ -80,7 +92,37 @@ class _LoginPageState extends State<LoginPage> {
                       topRight: Radius.circular(15),
                     ),
                   ),
+
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                    borderSide: _isShowError!
+                        ? (value.emailController.text == ''
+                              ? BorderSide(color: Colors.red, width: 1)
+                              : BorderSide())
+                        : BorderSide(),
+                  ),
+
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                    borderSide: _isShowError!
+                        ? (value.emailController.text == ''
+                              ? BorderSide(color: Colors.red, width: 3)
+                              : BorderSide())
+                        : BorderSide(),
+                  ),
                   labelText: "Email",
+                  labelStyle: _isShowError!
+                      ? (value.emailController.text == ''
+                            ? TextStyle(color: Colors.red)
+                            : null)
+                      : null,
+
                   filled: true,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
                 ),
@@ -93,6 +135,9 @@ class _LoginPageState extends State<LoginPage> {
 
               child: TextField(
                 controller: value.passwordController,
+                onTapOutside: (PointerDownEvent event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
                 obscureText: true,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
@@ -101,15 +146,53 @@ class _LoginPageState extends State<LoginPage> {
                       bottomRight: Radius.circular(15),
                     ),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                    borderSide: _isShowError!
+                        ? (value.passwordController.text == ''
+                              ? BorderSide(color: Colors.red, width: 1)
+                              : BorderSide())
+                        : BorderSide(),
+                  ),
+
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                    borderSide: _isShowError!
+                        ? (value.passwordController.text == ''
+                              ? BorderSide(color: Colors.red, width: 3)
+                              : BorderSide())
+                        : BorderSide(),
+                  ),
 
                   labelText: "Password",
+
                   filled: true,
                   floatingLabelBehavior: FloatingLabelBehavior.never,
+                  labelStyle: _isShowError!
+                      ? (value.passwordController.text == ''
+                            ? TextStyle(color: Colors.red)
+                            : null)
+                      : null,
                 ),
               ),
             ),
-
-            Spacer(flex: 3),
+            Spacer(flex: 1),
+            Center(
+              child: value.loginErrorMessage == null
+                  ? null
+                  : Text(
+                      value.loginErrorMessage!,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red),
+                    ),
+            ),
+            Spacer(flex: 2),
             Padding(
               padding: EdgeInsetsGeometry.only(top: 8),
               child: SizedBox(
@@ -118,17 +201,28 @@ class _LoginPageState extends State<LoginPage> {
                 child: FilledButton.icon(
                   onPressed: () async {
                     value.changeLoadingLogin();
-                    String? token = await value.authController.login(
-                      value.emailController.text,
-                      value.passwordController.text,
-                    );
-                    print("Email = ${value.emailController.text}");
-                    print("Password = ${value.passwordController.text}");
-                    print("Login Token = ${token}");
-                    if (token != null) {
-                      Navigator.pushReplacementNamed(context, "/home");
+                    _isShowError = true;
+                    if (!value.emptyLoginForm) {
+                      String? token = await value.authController.login(
+                        value.emailController.text,
+                        value.passwordController.text,
+                      );
+                      print("Email = ${value.emailController.text}");
+                      print("Password = ${value.passwordController.text}");
+                      print("Login Token = ${token}");
+                      if (token != null) {
+                        Navigator.pushReplacementNamed(context, "/home");
+                        value.clearAllForm();
+                      } else {
+                        _isShowError = false;
+                        value.setLoginErrorMessage("Invalid Email or Password");
+                      }
+                    } else {
+                      value.setLoginErrorMessage(
+                        "Email or Password can't be empty",
+                      );
                     }
-
+                    
                     value.changeLoadingLogin();
                   },
                   label: value.isLoadingLogin
