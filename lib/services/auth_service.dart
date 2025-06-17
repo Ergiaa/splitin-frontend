@@ -28,6 +28,7 @@ class AuthService {
       print('Login error: $e');
       return null;
     }
+
     return null;
   }
 
@@ -38,7 +39,7 @@ class AuthService {
   }
 
   // Ini nanti
-  Future<bool> signup(String username, String email, String password) async {
+  Future<int?> signup(String username, String email, String password) async {
     try {
       final response = await post(
         Uri.parse("${dotenv.env["BACKEND_URL"]}/user"),
@@ -50,11 +51,12 @@ class AuthService {
         },
       );
       print("Username : ${username}");
-      if (response.statusCode == 201) return true;
+      // if (response.statusCode == 201) return true;
+      return response.statusCode;
     } catch (e) {
       print('Signup error: $e');
-      return false;
+      return null;
     }
-    return false;
+    return null;
   }
 }

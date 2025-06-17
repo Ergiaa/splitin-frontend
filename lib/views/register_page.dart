@@ -274,13 +274,13 @@ class _RegisterPageState extends State<RegisterPage> {
                           if (!value.emptyRegisterForm) {
                             if (value.passwordController.text ==
                                 value.passwordConfirmationController.text) {
-                              bool isSuccess = await value.authController
+                              int? statusResponse = await value.authController
                                   .signup(
                                     value.usernameController.text,
                                     value.emailController.text,
                                     value.passwordController.text,
                                   );
-                              if (isSuccess) {
+                              if (statusResponse == 201) {
                                 showDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -324,14 +324,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   ),
                                 );
                                 
-                              } else {
+                              } else if (statusResponse == 400){
                                 value.setRegisterErrorMessage(
-                                  "Registrasi Gagal, Coba Lagi Nanti",
+                                  "User sudah ada",
                                 );
+                              } else{
+                                value.setRegisterErrorMessage("Terjadi Kesalahan saat registrasi");
                               }
                             } else {
                               value.setRegisterErrorMessage(
-                                "Passwords don't match",
+                                "Password tidak sama",
                               );
                             }
                           }

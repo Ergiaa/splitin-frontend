@@ -18,5 +18,5 @@ class AuthController extends ChangeNotifier {
     _authService.deleteToken();
   }
 
-  Future<bool> signup(String username, String email, String password) => _authService.signup(username, email, password);
+  Future<int?> signup(String username, String email, String password) => _authService.signup(username, email, password);
 }

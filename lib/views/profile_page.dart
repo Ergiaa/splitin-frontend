@@ -159,7 +159,8 @@ class _ProfilePageState extends State<ProfilePage> {
             color: const Color(0xFFF3F3F3),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text(
+          alignment:true ? Alignment.center : null,
+          child: true ? CircularProgressIndicator() : Text(
             value,
             style: const TextStyle(fontSize: 15, color: Colors.black87),
           ),
