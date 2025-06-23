@@ -9,6 +9,8 @@ class ProviderModel extends ChangeNotifier {
   int _selectedIndex = 0;
   bool _isLoadingLogin = false;
   bool _isLoadingRegister = false;
+  bool _profileEditState = false;
+  bool _profileInitProcess = false;
   String? _loginErrorMessage;
   String? _registerErrorMessage;
   final TextEditingController _emailController = TextEditingController();
@@ -17,8 +19,17 @@ class ProviderModel extends ChangeNotifier {
   final TextEditingController _passwordConfirmationController =
       TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _studentIDController = TextEditingController();
   final _authController = AuthController();
 
+  bool checkEmailValidation() {
+    return _emailController.text.contains("@") &&
+        _emailController.text.split("@").length > 1 &&
+        _emailController.text.split("@")[1].contains(".");
+  }
+
+  bool get profileEditState => _profileEditState;
+  bool get profileInitProcess => _profileInitProcess;
   int get selectedIndex => _selectedIndex;
   bool get isLoadingLogin => _isLoadingLogin;
   bool get isLoadingRegister => _isLoadingRegister;
@@ -37,6 +48,7 @@ class ProviderModel extends ChangeNotifier {
   TextEditingController get passwordConfirmationController =>
       _passwordConfirmationController;
   TextEditingController get phoneNumberController => _phoneNumberController;
+  TextEditingController get studentIDController => _studentIDController;
   AuthController get authController => _authController;
 
   void changeIndex(int newIndex) {
@@ -54,6 +66,16 @@ class ProviderModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void changeProfileEditState() {
+    _profileEditState = !_profileEditState;
+    notifyListeners();
+  }
+
+  void changeProfileInitState() {
+    _profileInitProcess = !_profileInitProcess;
+    notifyListeners();
+  }
+
   void setLoginErrorMessage(String? message) {
     _loginErrorMessage = message;
   }
@@ -68,5 +90,6 @@ class ProviderModel extends ChangeNotifier {
     _passwordConfirmationController.clear();
     _usernameController.clear();
     _phoneNumberController.clear();
+    _studentIDController.clear();
   }
 }

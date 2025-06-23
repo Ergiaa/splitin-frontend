@@ -1,7 +1,4 @@
-// services/auth_service.dart
-
 import 'dart:convert';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
@@ -38,17 +35,12 @@ class AuthService {
     await _storage.delete(key: 'jwt');
   }
 
-  // Ini nanti
   Future<int?> signup(String username, String email, String password) async {
     try {
       final response = await post(
         Uri.parse("${dotenv.env["BACKEND_URL"]}/user"),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: {
-          'email': email,
-          'password': password,
-          'username': username,
-        },
+        body: {'email': email, 'password': password, 'username': username},
       );
       print("Username : ${username}");
       // if (response.statusCode == 201) return true;
@@ -58,5 +50,73 @@ class AuthService {
       return null;
     }
     return null;
+  }
+
+  Future<Map> getUserSession() async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+
+      if (token != null) {
+        String token_header = "Bearer $token";
+
+        Response response = await get(
+          Uri.parse("${dotenv.env["BACKEND_URL"]}/auth"),
+          headers: {"Authorization": token_header},
+        );
+        print("Response HTTP Code : ${response.body} | ${response.statusCode}");
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        } else {
+          return {"message": "User Session Berakhir"};
+        }
+      } else {
+        return {"message": "Token tidak ditemukan"};
+      }
+    } catch (e) {
+      print("get user data error : $e");
+      return {"message": "Server error, Coba lagi nanti"};
+    }
+  }
+
+  Future<Map> updateUser(
+    String username,
+    String email,
+    String? password,
+    String? phone_number,
+  ) async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String token_header = "Bearer $token";
+        print("Email : $email");
+        Map<String, String> user_data = {};
+        if (username != '') user_data['username'] = username;
+        if (email != '') user_data['email'] = email;
+        if (phone_number != '' && phone_number != null) user_data['phone_number'] = phone_number;
+        if (password != '' && password != null) user_data['password'] = password;
+        print("Phone Number : $phone_number");
+        print("User Data : ${jsonEncode(user_data)}");
+        Response response = await patch(
+          Uri.parse("${dotenv.env["BACKEND_URL"]}/user"),
+          headers: {"Content-Type": "application/x-www-form-urlencoded", "Authorization": token_header},
+          body: jsonEncode(user_data),
+        );
+        print("Response Update : ${response.body}");
+        if (response.statusCode == 201) {
+          return jsonDecode(response.body);
+        } else if (response.statusCode == 400) {
+          return jsonDecode(response.body)["message"];
+        } else {
+          print(response.body);
+          return {"message": "User Session Berakhir", "HTTP status code" : response.statusCode};
+        }
+      } else {
+        return {"message": "Token Tidak ditemukan"};
+      }
+    } catch (e) {
+      print("get user data error : $e");
+      return {"message": "Server error, Coba lagi nanti"};
+    }
   }
 }

@@ -1,29 +1,13 @@
 class User {
   final String username;
   final String email;
-  final String password;
+  final String phone_number;
+  final String student_id;
 
   User({
     required this.username,
     required this.email,
-    required this.password,
+    required this.phone_number,
+    required this.student_id,
   });
-
-  /// Factory method to create a User instance from JSON.
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      username: json['username'],
-      email: json['email'],
-      password: json['password'],
-    );
-  }
-
-  /// Method to convert User instance to JSON.
-  Map<String, dynamic> toJson() {
-    return {
-      'username': username,
-      'email': email,
-      'password': password,
-    };
-  }
 }
