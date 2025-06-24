@@ -29,7 +29,6 @@ class _MainPageState extends State<MainPage> {
         print("User Session Token ${token}");
         Navigator.pushReplacementNamed(context, "/home");
       }
-      // Close loading popup
     });
   }
 
@@ -43,9 +42,24 @@ class _MainPageState extends State<MainPage> {
       context: context,
       barrierDismissible: false,
       builder: (_) => Dialog(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        child: Center(child: CircularProgressIndicator()),
+        // The background color of the dialog
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // The loading indicator
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              // The text
+              const Text("Loading...", style: TextStyle(fontSize: 18)),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -58,7 +72,7 @@ class _MainPageState extends State<MainPage> {
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if(!didPop){
+        if (!didPop) {
           SystemNavigator.pop();
         }
       },
@@ -70,7 +84,7 @@ class _MainPageState extends State<MainPage> {
               Spacer(flex: 3),
               Padding(
                 padding: EdgeInsetsGeometry.only(left: screen_width / 22),
-      
+
                 child: Container(
                   alignment: Alignment.centerLeft,
                   child: Column(
@@ -85,7 +99,7 @@ class _MainPageState extends State<MainPage> {
                   ),
                 ),
               ),
-      
+
               Spacer(flex: 7),
               Container(
                 alignment: Alignment.bottomCenter,

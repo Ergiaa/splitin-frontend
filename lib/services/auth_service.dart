@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
@@ -99,7 +100,10 @@ class AuthService {
         print("USER DATA : ${userData}");
         Response response = await patch(
           Uri.parse("${dotenv.env["BACKEND_URL"]}/user"),
-          headers: {"Content-Type": "application/x-www-form-urlencoded", "Authorization": token_header},
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": token_header,
+          },
           body: userData,
         );
 
@@ -107,16 +111,84 @@ class AuthService {
         if (response.statusCode == 201) {
           return jsonDecode(response.body);
         } else if (response.statusCode == 400) {
-          return jsonDecode(response.body)["message"];
+          return jsonDecode(response.body);
         } else {
           print(response.body);
-          return {"message": "User Session Berakhir", "HTTP status code" : response.statusCode};
+          return {
+            "message": "User Session Berakhir",
+            "HTTP status code": response.statusCode,
+          };
         }
       } else {
         return {"message": "Token Tidak ditemukan"};
       }
     } catch (e) {
       print("get user data error : $e");
+      return {"message": "Server error, Coba lagi nanti"};
+    }
+  }
+
+  Future<Map> createBill() async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String token_header = "Bearer $token";
+        Response response = await post(
+          Uri.parse("${dotenv.env["BACKEND_URL"]}/bills"),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": token_header,
+          },
+          body: {},
+        );
+        log(response.body);
+        if (response.statusCode == 201) {
+          return jsonDecode(response.body);
+        } else {
+          return {
+            "message": "User Session Berakhir",
+            "HTTP status code": response.statusCode,
+          };
+        }
+      } else {
+        return {"message": "Token Tidak ditemukan"};
+      }
+    } catch (e) {
+      return {"message": "Server error, Coba lagi nanti"};
+    }
+  }
+
+  Future<Map> addItemsToBill(String billId, List<Map> items) async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String token_header = "Bearer $token";
+        Response response = await post(
+          Uri.parse("${dotenv.env["BACKEND_URL"]}/bills/${billId}/items"),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": token_header,
+          },
+          body: jsonEncode(items)
+        );
+        log(response.body);
+        if (response.statusCode == 201) {
+          return jsonDecode(response.body);
+        } else if (response.statusCode == 403){
+          return {
+            "message":"Item telah dibuat",
+            "statusCode" : response.statusCode
+          };
+        } else{
+          return {
+            "message": "User Session Berakhir",
+            "statusCode": response.statusCode,
+          };
+        }
+      } else {
+        return {"message": "Token Tidak ditemukan"};
+      }
+    } catch (e) {
       return {"message": "Server error, Coba lagi nanti"};
     }
   }

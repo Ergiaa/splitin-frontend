@@ -5,6 +5,7 @@ import 'package:splitin_frontend/views/history_page.dart';
 import 'package:splitin_frontend/views/home_page.dart';
 import 'package:splitin_frontend/views/login_page.dart';
 import 'package:splitin_frontend/views/main_page.dart';
+import 'package:splitin_frontend/views/participants_selection_page.dart';
 import 'package:splitin_frontend/views/profile_page.dart';
 import 'package:splitin_frontend/views/register_page.dart';
 import 'package:splitin_frontend/views/group_details_page.dart';
@@ -44,6 +45,8 @@ class SplitInRoute{
         return MaterialPageRoute(builder: (_) => BillItemsPage());
       case group_details:
         return MaterialPageRoute(builder: (_) => GroupDetailsPage());
+      case add_participant:
+        return MaterialPageRoute(builder: (_) => ParticipantSelectorScreen());
       default:
         return MaterialPageRoute(builder: (_) => MainPage());
     }
