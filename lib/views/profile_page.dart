@@ -51,11 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
+  void refreshPage() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<ProviderModel>().changeProfileInitState();
       Map currentUser = await getUser();
@@ -70,6 +66,9 @@ class _ProfilePageState extends State<ProfilePage> {
           phone_number: currentUser['data']['phone_number'] ?? "",
           student_id: currentUser['data']['student_id'] ?? "",
         );
+        if (context.read<ProviderModel>().profileEditState)
+          context.read<ProviderModel>().changeProfileEditState();
+
         context.read<ProviderModel>().emailController.text =
             currentUser['data']['email'];
 
@@ -105,6 +104,13 @@ class _ProfilePageState extends State<ProfilePage> {
       }
       context.read<ProviderModel>().changeProfileInitState();
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    refreshPage();
   }
 
   Future<Map> getUser() async {
@@ -169,11 +175,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: 170,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           value.changeProfileEditState();
-                          print(
-                            "Profile Edit State : ${value.profileEditState}",
-                          );
+
                           if (value.profileEditState) {
                             _currentUser = User(
                               username: value.usernameController.text,
@@ -181,137 +185,217 @@ class _ProfilePageState extends State<ProfilePage> {
                               phone_number: value.phoneNumberController.text,
                               student_id: value.studentIDController.text,
                             );
-                          } else {
-                            if ((value.usernameController.text !=
-                                        _currentUser!.username &&
-                                    value.usernameController.text != '') ||
-                                (value.emailController.text !=
-                                        _currentUser!.email &&
-                                    value.emailController.text != '') ||
-                                value.passwordController.text != '' ||
-                                value.phoneNumberController.text !=
-                                    (_currentUser!.phone_number ?? '')) {
-                              profileDialog(
-                                Text("Perubahan Biodata"),
-                                Icon(Icons.question_mark),
-                                Text("Apakah kamu yakin ingin merubah data"),
-                                [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
+                          } else if (value.usernameController.text == "") {
+                            profileDialog(
+                              Text("Form Error"),
+                              Icon(Icons.close_rounded, color: Colors.red),
+                              Text("Username tidak boleh kosong"),
+                              [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    onPressed: () async {
-                                      print(
-                                        "email : ${value.emailController.text}",
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                    value.changeProfileEditState();
+                                  },
+                                  child: Text(
+                                    "Kembali Mengedit",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else if (value.emailController.text == "" ||
+                              !value.checkEmailValidation()) {
+                            profileDialog(
+                              Text("Form Error"),
+                              Icon(Icons.close_rounded, color: Colors.red),
+                              Text("Format email tidak valid"),
+                              [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                    value.changeProfileEditState();
+                                  },
+                                  child: Text(
+                                    "Kembali Mengedit",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else if (value.phoneNumberController.text != "" &&
+                              ((value.phoneNumberController.text.length < 10 ||
+                                      value.phoneNumberController.text.length >
+                                          13) ||
+                                  int.tryParse(
+                                        value.phoneNumberController.text,
+                                      ) ==
+                                      null)) {
+                            profileDialog(
+                              Text("Form Error"),
+                              Icon(Icons.close_rounded, color: Colors.red),
+                              Text(
+                                "phone number harus angka dan harus memiliki panjang antara 10 dan 13",
+                              ),
+                              [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                    value.changeProfileEditState();
+                                  },
+                                  child: Text(
+                                    "Kembali Mengedit",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            bool getRequest = false;
+                            profileDialog(
+                              Text("Perubahan Biodata"),
+                              Icon(Icons.question_mark),
+                              Text("Apakah kamu yakin ingin merubah data"),
+                              [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    Map updatedUser = await value.authController
+                                        .updateUser(
+                                          value.usernameController.text,
+                                          value.emailController.text,
+
+                                          value.phoneNumberController.text == ''
+                                              ? null
+                                              : value
+                                                    .phoneNumberController
+                                                    .text,
+                                          value.studentIDController.text == ''
+                                              ? null
+                                              : value.studentIDController.text,
+                                        );
+                                        print("UPDATE : ${updatedUser}");
+                                    if (updatedUser['data'] != null) {
+                                      _currentUser = User(
+                                        username: value.usernameController.text,
+                                        email: value.emailController.text,
+                                        phone_number:
+                                            value.phoneNumberController.text,
+                                        student_id:
+                                            value.studentIDController.text,
                                       );
-                                      print(
-                                        "Password profile : ${value.passwordController.text}",
-                                      );
-                                      Map updatedUser = await value
-                                          .authController
-                                          .updateUser(
-                                            value.usernameController.text,
-                                            value.emailController.text,
-                                            value.passwordController.text == ''
-                                                ? null
-                                                : value.passwordController.text,
-                                            value.phoneNumberController.text ==
-                                                    ''
-                                                ? null
-                                                : value
-                                                      .phoneNumberController
-                                                      .text,
-                                          );
-                                      if (updatedUser['data'] != null) {
-                                        // _currentUser = User(
-                                        //   username:
-                                        //       value.usernameController.text,
-                                        //   email: value.emailController.text,
-                                        //   phone_number:
-                                        //       (value
-                                        //               .phoneNumberController
-                                        //               .text ==
-                                        //           '')
-                                        //       ? null
-                                        //       : value
-                                        //             .phoneNumberController
-                                        //             .text,
-                                        // );
-                                        value.passwordController.text =
-                                            "Ga boleh kelihatan";
-                                        Navigator.of(context).pop(false);
-                                        profileDialog(
-                                          Text("Update User"),
-                                          Icon(
-                                            Icons.check,
-                                            color: Colors.green,
-                                          ),
-                                          Text("Biodata Berhasil Diubah"),
-                                          [
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.green,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.of(
-                                                  context,
-                                                ).pop(false);
-                                              },
-                                              child: Text(
-                                                "OK",
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                ),
+                                      Navigator.of(context).pop(false);
+                                      profileDialog(
+                                        Text("Update User"),
+                                        Icon(Icons.check, color: Colors.green),
+                                        Text("Biodata Berhasil Diubah"),
+                                        [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.green,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
                                               ),
                                             ),
-                                          ],
-                                        );
-                                      } else {}
-                                      Navigator.of(context).pop(false);
-                                      print(updatedUser);
-                                    },
-                                    child: Text(
-                                      "OK",
-                                      style: TextStyle(color: Colors.white),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                              refreshPage();
+                                            },
+                                            child: Text(
+                                              "OK",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    } else {
+                                      profileDialog(
+                                        Text("Update Error"),
+                                        Icon(
+                                          Icons.close_rounded,
+                                          color: Colors.red,
+                                        ),
+                                        Text(updatedUser["message"]),
+                                        [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.of(context).pop(false);
+                                              Navigator.of(context).pop(false);
+                                              refreshPage();
+                                            },
+                                            child: Text(
+                                              "OK",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                  },
+                                  child: Text(
+                                    "OK",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.red,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                      value.usernameController.text =
-                                          _currentUser!.username;
-                                      value.emailController.text =
-                                          _currentUser!.email;
-                                      value.phoneNumberController.text =
-                                          _currentUser!.phone_number ?? '';
-                                      value.passwordController.text =
-                                          "Ga boleh kelihatan";
-                                    },
-                                    child: Text(
-                                      "Batalkan",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                    value.usernameController.text =
+                                        _currentUser!.username;
+                                    value.emailController.text =
+                                        _currentUser!.email;
+                                    value.phoneNumberController.text =
+                                        _currentUser!.phone_number;
+                                    value.studentIDController.text =
+                                        _currentUser!.student_id;
+                                  },
+                                  child: Text(
+                                    "Batalkan",
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                ],
-                              );
-                            } else {
-                              print("Tidak ada perubahan");
-                              value.passwordController.text =
-                                  "Ga boleh kelihatan";
-                            }
+                                ),
+                              ],
+                            );
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -452,7 +536,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     obscureText: false,
                     enabled: value.profileEditState,
                     style: const TextStyle(fontSize: 15, color: Colors.black87),
-                    
+
                     decoration: InputDecoration(
                       hintText: value.profileEditState ? label : labelText,
                       border: OutlineInputBorder(
@@ -462,23 +546,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: value.profileEditState
-                            ? BorderSide(
-                                color: value.checkEmailValidation()
-                                    ? Colors.black
-                                    : Colors.red,
-                                width: 2,
-                              )
+                            ? BorderSide(color: Colors.black, width: 2)
                             : BorderSide.none,
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         borderSide: value.profileEditState
-                            ? BorderSide(
-                                color: value.checkEmailValidation()
-                                    ? Colors.black
-                                    : Colors.red,
-                                width: 2,
-                              )
+                            ? BorderSide(color: Colors.black, width: 2)
                             : BorderSide.none,
                       ),
                     ),

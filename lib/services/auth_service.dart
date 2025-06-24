@@ -82,26 +82,27 @@ class AuthService {
   Future<Map> updateUser(
     String username,
     String email,
-    String? password,
     String? phone_number,
+    String? student_id,
   ) async {
     try {
       String? token = await _storage.read(key: 'jwt');
       if (token != null) {
         String token_header = "Bearer $token";
         print("Email : $email");
-        Map<String, String> user_data = {};
-        if (username != '') user_data['username'] = username;
-        if (email != '') user_data['email'] = email;
-        if (phone_number != '' && phone_number != null) user_data['phone_number'] = phone_number;
-        if (password != '' && password != null) user_data['password'] = password;
-        print("Phone Number : $phone_number");
-        print("User Data : ${jsonEncode(user_data)}");
+        Map<String, String> userData = {};
+        if (username != '') userData['username'] = username;
+        if (email != '') userData['email'] = email;
+        if (phone_number != null) userData['phone_number'] = phone_number;
+        if (student_id != null) userData['student_id'] = student_id;
+        print("${username} || ${email} || ${phone_number} || ${student_id}");
+        print("USER DATA : ${userData}");
         Response response = await patch(
           Uri.parse("${dotenv.env["BACKEND_URL"]}/user"),
           headers: {"Content-Type": "application/x-www-form-urlencoded", "Authorization": token_header},
-          body: jsonEncode(user_data),
+          body: userData,
         );
+
         print("Response Update : ${response.body}");
         if (response.statusCode == 201) {
           return jsonDecode(response.body);
