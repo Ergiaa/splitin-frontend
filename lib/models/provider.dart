@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:splitin_frontend/controllers/auth_controller.dart';
+import 'package:splitin_frontend/models/participant.dart';
 import 'package:splitin_frontend/services/auth_service.dart';
 // import 'package:splitin_frontend/widgets/_text_editing_controller.dart';
 
@@ -21,6 +22,7 @@ class ProviderModel extends ChangeNotifier {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _studentIDController = TextEditingController();
   final _authController = AuthController();
+  final List<Participant> _allParticipants = [];
 
   bool checkEmailValidation() {
     return _emailController.text.contains("@") &&
@@ -28,6 +30,7 @@ class ProviderModel extends ChangeNotifier {
         _emailController.text.split("@")[1].contains(".");
   }
 
+  List<Participant> get allParticipants => _allParticipants;
   bool get profileEditState => _profileEditState;
   bool get profileInitProcess => _profileInitProcess;
   int get selectedIndex => _selectedIndex;
@@ -50,6 +53,22 @@ class ProviderModel extends ChangeNotifier {
   TextEditingController get phoneNumberController => _phoneNumberController;
   TextEditingController get studentIDController => _studentIDController;
   AuthController get authController => _authController;
+
+  void fillAllParticipants(Map allUser, String sessionId) {
+    for (Map user in allUser["data"]) {
+      if (user["id"] != sessionId) {
+        print("user ${user}");
+        _allParticipants.add(
+          Participant(
+            id: user["id"],
+            name: user["username"],
+            email: user["email"],
+            isSelected: false,
+          ),
+        );
+      }
+    }
+  }
 
   void changeIndex(int newIndex) {
     _selectedIndex = newIndex;

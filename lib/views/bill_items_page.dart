@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:splitin_frontend/constants/splitin_colors.dart';
 import 'package:splitin_frontend/models/item.dart';
+import 'package:splitin_frontend/models/participant.dart';
 import 'package:splitin_frontend/models/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:splitin_frontend/widgets/cart_list_item.dart';
@@ -56,14 +57,17 @@ class _BillItemsPageState extends State<BillItemsPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 Navigator.of(context).pop(false);
                 Navigator.of(context).pop(false);
+                
               },
               child: Text("OK", style: TextStyle(color: Colors.white)),
             ),
           ],
         );
+
+        
       } else {
         addBillDialog(
           Text("Error!!"),
@@ -241,7 +245,7 @@ class _BillItemsPageState extends State<BillItemsPage> {
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text('Confirm'),
                 onPressed: () async {
-                  if(_items.length == 0) return;
+                  if (_items.length == 0) return;
                   Map addItemToBill = await value.authController.addItemsToBill(
                     _billID,
                     convertItemsToMap(_items),
@@ -312,7 +316,7 @@ class _BillItemsPageState extends State<BillItemsPage> {
                           ),
                           onPressed: () {
                             value.authController.deleteToken();
-                            Navigator.pushReplacementNamed(context,"/");
+                            Navigator.pushReplacementNamed(context, "/");
                           },
                           child: Text(
                             "OK",
@@ -347,9 +351,12 @@ class _BillItemsPageState extends State<BillItemsPage> {
         appBar: AppBar(
           title: Text(
             "Tambahkan Item",
-            style: TextStyle(color: SplitinColors.green_button, fontWeight: FontWeight.bold),
-            
-          ),centerTitle: true,
+            style: TextStyle(
+              color: SplitinColors.green_button,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
           backgroundColor: Colors.white,
           leading: IconButton(
             onPressed: () {
@@ -360,7 +367,6 @@ class _BillItemsPageState extends State<BillItemsPage> {
         ),
         body: Column(
           children: [
-            // Expanded memastikan ListView mengambil semua ruang yang tersedia
             Expanded(
               child: ListView.builder(
                 itemCount: _items.length + 1,

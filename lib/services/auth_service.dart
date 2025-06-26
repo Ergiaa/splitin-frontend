@@ -334,4 +334,22 @@ class AuthService {
       };
     }
   }
+  Future<Map> getAllUser() async{
+    try{
+      Map currUser = await getUserSession();
+      if (currUser["data"] != null){
+        Response response = await get(Uri.parse("${dotenv.env["BACKEND_URL"]}/user?username"));
+        log(response.body);
+        if (response.statusCode == 201){
+          return jsonDecode(response.body);
+        }else{
+          return {"message":"Server Error"};
+        }
+      }else{
+        return {"message": "Token Tidak ditemukan"};
+      }
+    } catch (e){
+      return {"message":e};
+    }
+  }
 }

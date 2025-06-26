@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:splitin_frontend/views/assign_item_page.dart';
 import 'package:splitin_frontend/views/bill_items_page.dart';
 import 'package:splitin_frontend/views/group_page.dart';
 import 'package:splitin_frontend/views/history_page.dart';
@@ -23,7 +24,7 @@ class SplitInRoute{
   static const String bill_item = "/bill-item";
   static const String scan = "/bill-item/scan";
   static const String add_participant = "/bill-item/add-participants";
-
+  static const String assign_item = "${add_participant}/assign-item";
   static const String group_details = "/groups/group-details";
 
 
@@ -47,6 +48,8 @@ class SplitInRoute{
         return MaterialPageRoute(builder: (_) => GroupDetailsPage());
       case add_participant:
         return MaterialPageRoute(builder: (_) => ParticipantSelectorScreen());
+      case assign_item:
+        return MaterialPageRoute(builder: (_) => AssignItemScreen());
       default:
         return MaterialPageRoute(builder: (_) => MainPage());
     }
