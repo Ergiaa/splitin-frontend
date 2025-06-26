@@ -23,4 +23,5 @@ class AuthController extends ChangeNotifier {
   Future<Map> updateUser(String username, String email, String? phone_number, String? student_id) => _authService.updateUser(username, email, phone_number, student_id);
   Future<Map> get createBill => _authService.createBill();
   Future<Map> addItemsToBill(String billId, List<Map> items) => _authService.addItemsToBill(billId, items);
+  Future<Map> get getAllUser => _authService.getAllUser();
 }
