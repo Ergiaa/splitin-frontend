@@ -169,17 +169,17 @@ class AuthService {
             "Content-Type": "application/json",
             "Authorization": token_header,
           },
-          body: jsonEncode(items)
+          body: jsonEncode(items),
         );
         log(response.body);
         if (response.statusCode == 201) {
           return jsonDecode(response.body);
-        } else if (response.statusCode == 403){
+        } else if (response.statusCode == 403) {
           return {
-            "message":"Item telah dibuat",
-            "statusCode" : response.statusCode
+            "message": "Item telah dibuat",
+            "statusCode": response.statusCode,
           };
-        } else{
+        } else {
           return {
             "message": "User Session Berakhir",
             "statusCode": response.statusCode,
@@ -193,6 +193,147 @@ class AuthService {
     }
   }
 
+  Future<Map> getBillDraft(String billId) async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String tokenHeader = "Bearer $token";
+        final Uri url = Uri.parse(
+          "${dotenv.env["BACKEND_URL"]}/bills/$billId/draft",
+        );
+
+        final response = await get(
+          url,
+          headers: {"Authorization": tokenHeader},
+        );
+
+        log("GET Response (${response.statusCode}): ${response.body}");
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        } else {
+          return {
+            "message": "Unexpected response",
+            "statusCode": response.statusCode,
+            "body": response.body,
+          };
+        }
+      } else {
+        return {"message": "Token not found"};
+      }
+    } catch (e) {
+      return {
+        "message": "Server error, please try again later",
+        "error": e.toString(),
+      };
+    }
+  }
+
+  Future<Map> getAllBillForUser(int page, int limit) async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String tokenHeader = "Bearer $token";
+        final Uri url = Uri.parse(
+          "${dotenv.env["BACKEND_URL"]}/bills/all?page=$page&limit=$limit",
+        );
+
+        final response = await get(
+          url,
+          headers: {"Authorization": tokenHeader},
+        );
+
+        log("GET Response (${response.statusCode}): ${response.body}");
+
+        if (response.statusCode == 201) {
+          return jsonDecode(response.body);
+        } else {
+          return {
+            "message": "Unexpected response",
+            "statusCode": response.statusCode,
+            "body": response.body,
+          };
+        }
+      } else {
+        return {"message": "Token not found"};
+      }
+    } catch (e) {
+      return {
+        "message": "Server error, please try again later",
+        "error": e.toString(),
+      };
+    }
+  }
+
+  Future<Map> getAllLedgers(int page, int limit) async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String tokenHeader = "Bearer $token";
+        final Uri url = Uri.parse(
+          "${dotenv.env["BACKEND_URL"]}/ledgers?page=$page&limit=$limit",
+        );
+
+        final response = await get(
+          url,
+          headers: {"Authorization": tokenHeader},
+        );
+
+        log("GET Response (${response.statusCode}): ${response.body}");
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        } else {
+          return {
+            "message": "Unexpected response",
+            "statusCode": response.statusCode,
+            "body": response.body,
+          };
+        }
+      } else {
+        return {"message": "Token not found"};
+      }
+    } catch (e) {
+      return {
+        "message": "Server error, please try again later",
+        "error": e.toString(),
+      };
+    }
+  }
+
+  Future<Map> getTotalLedgers() async {
+    try {
+      String? token = await _storage.read(key: 'jwt');
+      if (token != null) {
+        String tokenHeader = "Bearer $token";
+        final Uri url = Uri.parse("${dotenv.env["BACKEND_URL"]}/ledgers/total");
+
+        final response = await get(
+          url,
+          headers: {"Authorization": tokenHeader},
+        );
+
+        log("GET Response (${response.statusCode}): ${response.body}");
+
+        if (response.statusCode == 200) {
+          return jsonDecode(response.body);
+        } else {
+          return {
+            "message": "Unexpected response",
+            "statusCode": response.statusCode,
+            "body": response.body,
+          };
+        }
+      } else {
+        return {"message": "Token not found"};
+      }
+    } catch (e) {
+      return {
+        "message": "Server error, please try again later",
+        "error": e.toString(),
+      };
+    }
+  }
   Future<Map> getAllUser() async{
     try{
       Map currUser = await getUserSession();
@@ -211,6 +352,4 @@ class AuthService {
       return {"message":e};
     }
   }
-
-
 }
