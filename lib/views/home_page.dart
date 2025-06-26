@@ -360,28 +360,27 @@ class _HomePageState extends State<HomePage> {
                               icon: Icons.receipt_long,
                               iconColor: const Color(0xFFB2DFDB),
                               iconBackgroundColor: const Color(0xFFE0F2F1),
-                              participants: bill.participants.map((p) {
-                                final bool isYou =
-                                    p.id ==
-                                    'your_user_id'; // Replace this with actual user ID logic
-                                final BillTransactionType type = isYou
-                                    ? BillTransactionType.youOwe
-                                    : BillTransactionType.owesYou;
-
-                                return bill_data.BillParticipant(
-                                  imageUrl: 'assets/images/person.jpeg',
-                                  transactionType: type,
-                                  amount: isYou
-                                      ? "Rp ${formatCurrency(bill.totalDebt)}"
-                                      : "Rp ${formatCurrency(bill.totalCredit)}",
-                                  tagBackgroundColor: isYou
-                                      ? Colors.amber[100]!
-                                      : Colors.green[100]!,
-                                  tagTextColor: isYou
-                                      ? Colors.amber[800]!
-                                      : Colors.green[800]!,
-                                );
-                              }).toList(),
+                              participants: [
+                                if (bill.totalCredit != 0)
+                                  bill_data.BillParticipant(
+                                    imageUrl: 'assets/images/person.jpeg',
+                                    transactionType:
+                                        BillTransactionType.owesYou,
+                                    amount:
+                                        'Rp ${formatCurrency(bill.totalCredit)}',
+                                    tagBackgroundColor: Colors.green[100]!,
+                                    tagTextColor: Colors.green[800]!,
+                                  ),
+                                if (bill.totalDebt != 0)
+                                  bill_data.BillParticipant(
+                                    imageUrl: 'assets/images/person.jpeg',
+                                    transactionType: BillTransactionType.youOwe,
+                                    amount:
+                                        'Rp ${formatCurrency(bill.totalDebt)}',
+                                    tagBackgroundColor: Colors.amber[100]!,
+                                    tagTextColor: Colors.amber[800]!,
+                                  ),
+                              ],
                             ),
                             const SizedBox(height: 30),
                           ],
