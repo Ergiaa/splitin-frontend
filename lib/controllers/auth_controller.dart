@@ -28,7 +28,6 @@ class AuthController extends ChangeNotifier {
     String? student_id,
   ) => _authService.updateUser(username, email, phone_number, student_id);
   Future<Map> get createBill => _authService.createBill();
-<<<<<<< dev.tito
   Future<Map> addItemsToBill(String billId, List<Map> items) =>
       _authService.addItemsToBill(billId, items);
   Future<Map> getAllBillForUser(int page, int limit) =>
@@ -36,8 +35,5 @@ class AuthController extends ChangeNotifier {
   Future<Map> getAllLedgers(int page, int limit) =>
       _authService.getAllLedgers(page, limit);
   Future<Map> getTotalLedgers() => _authService.getTotalLedgers();
-=======
-  Future<Map> addItemsToBill(String billId, List<Map> items) => _authService.addItemsToBill(billId, items);
   Future<Map> get getAllUser => _authService.getAllUser();
->>>>>>> main
 }
