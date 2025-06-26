@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:splitin_frontend/controllers/auth_controller.dart';
 import 'package:splitin_frontend/models/provider.dart';
 import 'package:splitin_frontend/widgets/bottom_navigation_bar.dart';
 import 'package:splitin_frontend/widgets/floating_action_button.dart';
 import 'package:splitin_frontend/widgets/tagihan_home_card.dart';
 import 'package:splitin_frontend/widgets/history_card.dart';
-import 'package:splitin_frontend/models/bill_data.dart';
+import 'package:splitin_frontend/models/bill_data.dart' as bill_data;
+import 'package:splitin_frontend/models/bill_data.dart'
+    show BillTransactionType;
+import 'package:splitin_frontend/models/home_bill.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,53 +20,147 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> ledgerData = [];
+  List<BillModel> bills = [];
+  int totalDebt = 0;
+  int totalCredit = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchLedgers();
+    fetchBills();
+    fetchTotalLedgers();
+  }
+
+  Future<void> fetchLedgers() async {
+    final response = await AuthController().getAllLedgers(
+      1,
+      10,
+    ); // replace with your actual service class
+    if (response['status'] == true) {
+      setState(() {
+        ledgerData = List<Map<String, dynamic>>.from(response['data']);
+      });
+    } else {
+      // optionally show error
+      print(response['message']);
+    }
+  }
+
+  Future<void> fetchBills() async {
+    final response = await AuthController().getAllBillForUser(1, 2);
+    if (response['status'] == true) {
+      setState(() {
+        bills = (response['data'] as List)
+            .map((item) => BillModel.fromJson(item))
+            .toList();
+      });
+    } else {
+      print(response['message']);
+    }
+  }
+
+  Future<void> fetchTotalLedgers() async {
+    final response = await AuthController()
+        .getTotalLedgers(); // adjust if needed
+    if (response['status'] == true) {
+      final data = response['data'];
+      setState(() {
+        totalDebt = data['total_debt'];
+        totalCredit = data['total_credit'];
+      });
+    } else {
+      print(response['message']);
+    }
+  }
+
+  List<Widget> buildLedgerHistoryCards() {
+    return ledgerData.map((ledger) {
+      final isPaid = ledger['is_paid'] == true;
+      final isDebt = ledger['ledger_type'] == 'debt';
+      final otherUser = isDebt
+          ? ledger['creditor_user']
+          : ledger['debtor_user'];
+
+      final description = isDebt
+          ? "Utang kamu ke ${otherUser['username'].isEmpty ? 'Temanmu' : otherUser['username']}"
+          : "${otherUser['username'].isEmpty ? 'Temanmu' : otherUser['username']} utang ke kamu";
+
+      return Column(
+        children: [
+          HistoryCard(
+            title:
+                ledger['bill_name'], // You could replace this with bill name if you have it
+            date: formatDate(ledger['created_at']),
+            description: description,
+            totalAmount: "Rp ${formatCurrency(ledger['amount'])}",
+            icon: Icons.receipt_long,
+            iconColor: Colors.grey[700]!,
+            iconBackgroundColor: Colors.grey[200]!,
+            statusText: isPaid ? "Sudah Lunas" : "Belum Lunas",
+            statusBackgroundColor: isPaid
+                ? Colors.lightGreen[100]!
+                : Colors.red[100]!,
+            statusTextColor: isPaid
+                ? Colors.lightGreen[800]!
+                : Colors.red[800]!,
+          ),
+          const SizedBox(height: 20),
+        ],
+      );
+    }).toList();
+  }
+
+  String formatCurrency(int amount) {
+    return amount.toString().replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+      (match) => '.',
+    );
+  }
+
+  String formatDate(String isoDate) {
+    final dateTime = DateTime.parse(isoDate);
+    return "${dateTime.day} ${_monthName(dateTime.month)} ${dateTime.year}";
+  }
+
+  String _monthName(int month) {
+    const months = [
+      "",
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember",
+    ];
+    return months[month];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<BillParticipant> baliTripParticipants = [
-      BillParticipant(
-        imageUrl: 'assets/images/person.jpeg',
-        transactionType: BillTransactionType.owesYou,
-        amount: 'Rp 15,000,000',
-        tagBackgroundColor: Colors.green[100]!,
-        tagTextColor: Colors.green[800]!,
-      ),
-    ];
-
-    final List<BillParticipant> birthdayParticipants = [
-      BillParticipant(
-        imageUrl: 'assets/images/person.jpeg',
-        transactionType: BillTransactionType.youOwe,
-        amount: 'Rp 500,000',
-        tagBackgroundColor: Colors.amber[100]!,
-        tagTextColor: Colors.amber[800]!,
-      ),
-      BillParticipant(
-        imageUrl: 'assets/images/person.jpeg',
-        transactionType: BillTransactionType.owesYou,
-        amount: 'Rp 5,000',
-        tagBackgroundColor: Colors.green[100]!,
-        tagTextColor: Colors.green[800]!,
-      ),
-    ];
-
     return PopScope(
       canPop: false,
-      onPopInvokedWithResult: (didPop, result) async{
-        
+      onPopInvokedWithResult: (didPop, result) async {
         if (!didPop) {
           bool shouldExit = await showDialog(
-            
             context: context,
             builder: (context) => AlertDialog(
               title: Text('Keluar Aplikasi'),
               content: Text('Apakah kamu yakin ingin keluar?'),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(false), // Cancel
+                  onPressed: () => Navigator.of(context).pop(false),
                   child: Text('Tidak'),
                 ),
                 TextButton(
-                  onPressed: () => SystemNavigator.pop(), // Confirm
+                  onPressed: () => SystemNavigator.pop(),
                   child: Text('Iya'),
                 ),
               ],
@@ -70,14 +168,15 @@ class _HomePageState extends State<HomePage> {
           );
 
           if (shouldExit) {
-            Navigator.of(context).maybePop(); // or use SystemNavigator.pop()
+            Navigator.of(context).maybePop();
           }
         }
       },
       child: Consumer<ProviderModel>(
         builder: (context, value, child) => Scaffold(
           backgroundColor: Colors.white,
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
           floatingActionButton: SizedBox(
             height: 70,
             width: 70,
@@ -91,7 +190,12 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: const EdgeInsets.only(top: 60, left: 20, right: 20, bottom: 50),
+                  padding: const EdgeInsets.only(
+                    top: 60,
+                    left: 20,
+                    right: 20,
+                    bottom: 50,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -157,17 +261,16 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Text(
-                                    "Rp500,000",
-                                    style: TextStyle(
+                                    "Rp ${formatCurrency(totalDebt)}", // ✅ Replace hardcoded debt
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 28,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                                 ),
-                                //
                                 Transform.translate(
                                   offset: const Offset(0, -30),
                                   child: Align(
@@ -177,13 +280,14 @@ class _HomePageState extends State<HomePage> {
                                       width: 100,
                                       height: 50,
                                       color: Colors.white,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return const Icon(
-                                          Icons.visibility,
-                                          color: Colors.white,
-                                          size: 24,
-                                        );
-                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                            return const Icon(
+                                              Icons.visibility,
+                                              color: Colors.white,
+                                              size: 24,
+                                            );
+                                          },
                                     ),
                                   ),
                                 ),
@@ -197,9 +301,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             const SizedBox(height: 5),
-                            const Text(
-                              "Rp15,005,000",
-                              style: TextStyle(
+                            Text(
+                              "Rp ${formatCurrency(totalCredit)}", // ✅ Replace hardcoded credit
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -210,8 +314,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ),
-                )
-                ,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
@@ -226,43 +329,65 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                        },
+                        onPressed: () {},
                         child: const Text(
                           "lihat semua",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 15),
-                TagihanHomeCard(
-                  title: "Bali Trip w/ the boys",
-                  date: "1 Juni 2025",
-                  totalAmount: "Rp 50,000,000",
-                  icon: Icons.beach_access,
-                  iconColor: const Color.fromARGB(255, 255, 165, 165),
-                  iconBackgroundColor: const Color.fromARGB(255, 255, 165, 165),
-                  participants: baliTripParticipants,
-                ),
-      
-                const SizedBox(height: 30),
-      
-      
-                TagihanHomeCard(
-                  title: "Birthday Surprise",
-                  date: "16 Mei 2025",
-                  totalAmount: "Rp 10,000,000",
-                  icon: Icons.cake,
-                  iconColor: const Color.fromARGB(255, 252, 230, 165),
-                  iconBackgroundColor: const Color.fromARGB(255, 252, 230, 165),
-                  participants: birthdayParticipants,
-                ),
-      
+                ...(bills.isEmpty
+                    ? [
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            'Belum ada tagihan.',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      ]
+                    : bills.map((bill) {
+                        return Column(
+                          children: [
+                            TagihanHomeCard(
+                              title: bill.billName,
+                              date: formatDate(bill.createdAt),
+                              totalAmount:
+                                  "Rp ${formatCurrency(bill.totalPrice)}",
+                              icon: Icons.receipt_long,
+                              iconColor: const Color(0xFFB2DFDB),
+                              iconBackgroundColor: const Color(0xFFE0F2F1),
+                              participants: bill.participants.map((p) {
+                                final bool isYou =
+                                    p.id ==
+                                    'your_user_id'; // Replace this with actual user ID logic
+                                final BillTransactionType type = isYou
+                                    ? BillTransactionType.youOwe
+                                    : BillTransactionType.owesYou;
+
+                                return bill_data.BillParticipant(
+                                  imageUrl: 'assets/images/person.jpeg',
+                                  transactionType: type,
+                                  amount: isYou
+                                      ? "Rp ${formatCurrency(bill.totalDebt)}"
+                                      : "Rp ${formatCurrency(bill.totalCredit)}",
+                                  tagBackgroundColor: isYou
+                                      ? Colors.amber[100]!
+                                      : Colors.green[100]!,
+                                  tagTextColor: isYou
+                                      ? Colors.amber[800]!
+                                      : Colors.green[800]!,
+                                );
+                              }).toList(),
+                            ),
+                            const SizedBox(height: 30),
+                          ],
+                        );
+                      }).toList()),
+
                 const SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -278,34 +403,20 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                        },
+                        onPressed: () {},
                         child: const Text(
                           "lihat semua",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.grey, fontSize: 16),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 15),
-                HistoryCard(
-                  title: "Nobar Jumbo",
-                  date: "21 Mei 2025",
-                  description: "Utang kamu ke Tony Stark",
-                  totalAmount: "Rp 100,000",
-                  icon: Icons.movie,
-                  iconColor: Colors.grey[700]!,
-                  iconBackgroundColor: Colors.grey[200]!,
-                  statusText: "Sudah Lunas",
-                  statusBackgroundColor: Colors.lightGreen[100]!,
-                  statusTextColor: Colors.lightGreen[800]!,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(children: buildLedgerHistoryCards()),
                 ),
-      
-                const SizedBox(height: 20),
               ],
             ),
           ),
